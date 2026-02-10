@@ -1,0 +1,27 @@
+{% extends "layout.twig" %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+    <h2>Galería de Imágenes</h2>
+
+    <div class="grid">
+        {% for img in imagenes_db %}
+            <div class="card">
+                <h3>{{ img.titulo | capitalize }}</h3>
+                <img src="img/{{ img.ruta }}" alt="{{ img.titulo }}">
+                <p>Publicado: {{ img.fecha | date("d/m/Y") }}</p>
+            </div>
+        {% else %}
+            <p>No hay imágenes registradas actualmente.</p>
+        {% endfor %}
+    </div>
+
+    <hr>
+
+    <form action="guardar" method="POST">
+        <input type="text" name="titulo" placeholder="Título" required>
+        <input type="text" name="ruta" placeholder="archivo.jpg" required>
+        <button type="submit">Añadir a SQLite</button>
+    </form>
+{% endblock %}
