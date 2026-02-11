@@ -1,13 +1,12 @@
 <?php
 class ErrorController {
-    public static function show($code = 404, $message = "Página no encontrada") {
-        header("HTTP/1.0 $code");
-
-        $data = array(
+    public static function show($code, $mensaje) {
+        // Enviamos el código de estado real al navegador
+        http_response_code($code);
+        View::render('landings/error_belta', array(
             'codigo' => $code,
-            'mensaje' => $message
-        );
-
-        return View::render('error', $data);
+            'mensaje' => $mensaje
+        ));
+        exit;
     }
 }

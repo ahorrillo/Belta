@@ -1,8 +1,4 @@
 <?php
-/**
- * BellotaFW - Front Controller (Versión Final)
- */
-
 // 1. Configuración de errores para el desarrollador
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
@@ -35,8 +31,8 @@ set_exception_handler(function ($exception) {
 // 4. Inicializar el Router
 $router = new Router();
 
-// 5. Cargar las rutas definidas por el usuario
-require_once __DIR__ . '/../app/routes.php';
+// 5. Cargar las rutas definidas por el usuario (no se puede en autoload porque no es una clase)
+require_once __DIR__ . '/../app/config/routes.php';
 
 // 6. Ejecutar el Router
 // Si no encuentra la ruta, disparamos el Error 404

@@ -1,27 +1,27 @@
-# **🌰 Bellota: Guía de Referencia y Estructura**
+# **🌰 BELTA BELloTA Micro Framework MVC PHP**
 
-**BellotaFW** es un micro-framework basado en el patrón **MVC** (Modelo-Vista-Controlador), diseñado para ser ligero, seguro y compatible con **PHP 5.3**.
+**Belta** es un micro-framework basado en el patrón **MVC** (Modelo-Vista-Controlador), diseñado para ser ligero, seguro y compatible con **PHP 5.3**, diseñado especialmente para aquellos entornos de producción antiguos, imposibles de actualizar, y que dependemos de ellos para publicar landigs sencillas de eventos.
 
 ---
 
 ## **📂 Estructura de Carpetas**
 
-* **/app**: El corazón de tu aplicación.  
-  * `/controllers`: Lógica de control (`HomeController.php`, `ErrorController.php`).  
-  * `/models`: Gestión de datos con SQLite (`Imagen.php`).  
-  * `/views`: Plantillas de Twig (`layout.twig`, `home.twig`, `error.twig`).  
-  * `/cache`: Archivos temporales de Twig (requiere permisos de escritura).  
-  * `routes.php`: El mapa de navegación.  
-  * `database.sqlite`: Tu base de datos en un archivo.  
-* **/core**: Los motores del sistema.  
-  * `Database.php`: Conexión PDO (Singleton).  
-  * `Router.php`: Gestor de URLs.  
-  * `View.php`: Adaptador de Twig.  
-* **/public**: La única carpeta visible desde internet.  
-  * `index.php`: El Front Controller.  
-  * `/.htaccess`: Protege el acceso directo.  
-  * `/css`, `/img`, `/js`: Archivos estáticos.  
-* **/.htaccess**: Redirige todo el tráfico a `/public`.
+* **/app**: El corazón de tu aplicación.
+  * `/controllers`: Lógica de control (`HomeController.php`, `ErrorController.php`).
+  * `/models`: Gestión de datos con SQLite (`Imagen.php`).
+  * `/views`: Plantillas de Twig (`layout.twig`, `home.twig`, `error.twig`).
+  * `/cache`: Archivos temporales de Twig (requiere permisos de escritura).
+  * `/config`: Archivos de rutas (`routes.php`).
+  * `/db`: El mapa de navegación (`database.sqlite`).
+* **/core**: Los motores del sistema.
+  * `Database.php`: Conexión PDO (Singleton).
+  * `Router.php`: Gestor de URLs.
+  * `View.php`: Adaptador de Twig.
+* **/public**: La única carpeta visible desde internet.
+  * `index.php`: El Front Controller.
+  * `/.htaccess`: Protege el acceso directo.
+  * `/css`, `/img`, `/js`: Archivos estáticos.
+* **/README.md**: Este documento de información.
 
 ---
 
@@ -29,32 +29,44 @@
 
 ### **1\. El Portero (`public/index.php`)**
 
-Configura el autoloader, el manejo de errores y arranca el Router.
+El Front Controller. Configura el autoloader, el manejo de errores y arranca el Router.
 
 PHP
 
 ```
-<?php
-// Autoload de clases
+// 1. Configuración de errores para el desarrollador
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+// 2. Autoload: Carga automática de clases
 spl_autoload_register(function ($class) {
-    $paths = array(__DIR__.'/../core/', __DIR__.'/../app/controllers/', __DIR__.'/../app/models/');
+    $paths = array(
+        __DIR__ . '/../core/',
+        __DIR__ . '/../app/controllers/',
+        __DIR__ . '/../app/models/'
+    );
     foreach ($paths as $path) {
         $file = $path . $class . '.php';
-        if (file_exists($file)) { require_once $file; return; }
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
     }
 });
-
-// Manejo global de errores (500)
+// 3. RED DE SEGURIDAD: Manejo de Excepciones Globales
 set_exception_handler(function ($exception) {
-    ErrorController::show(500, "Error interno del servidor.");
+    // Log del error para el programador (opcional)
+    // error_log($exception->getMessage());
+    // Mostramos la vista de error neutra con código 500
+    ErrorController::show(500, "Lo sentimos, ha ocurrido un error interno en el servidor.");
 });
-
+// 4. Inicializar el Router
 $router = new Router();
-require_once __DIR__ . '/../app/routes.php';
-
-// Ejecución con manejo de error 404
+// 5. Cargar las rutas definidas por el usuario (no se puede en autoload porque no es una clase)
+require_once __DIR__ . '/../app/config/routes.php';
+// 6. Ejecutar el Router
+// Si no encuentra la ruta, disparamos el Error 404
 $router->dispatch(function() {
-    ErrorController::show(404, "Página no encontrada.");
+    ErrorController::show(404, "Vaya, parece que esta página no existe.");
 });
 ```
 

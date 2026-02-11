@@ -1,7 +1,7 @@
 <?php
 
 /* layout.twig */
-class __TwigTemplate_dacf0826bf30e7ceae00297502666a12ca043fe47e958cd6a72b6f6fdfb595e4 extends Twig_Template
+class __TwigTemplate_d7eba118e74b24d8fb2f57f9fb1acb501e6f6b5d449b39510eaeb7cc03a5019a extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
     {
@@ -26,7 +26,6 @@ class __TwigTemplate_dacf0826bf30e7ceae00297502666a12ca043fe47e958cd6a72b6f6fdfb
         // line 5
         $this->displayBlock('title', $context, $blocks);
         echo "</title>
-    <link rel=\"stylesheet\" href=\"/css/style.css\">
 </head>
 <body>
     <header>
@@ -35,13 +34,13 @@ class __TwigTemplate_dacf0826bf30e7ceae00297502666a12ca043fe47e958cd6a72b6f6fdfb
 
     <main>
         ";
-        // line 14
+        // line 13
         $this->displayBlock('content', $context, $blocks);
-        // line 15
+        // line 14
         echo "    </main>
 
     <footer>
-        <p>&copy; 2026 Framework Badajoz</p>
+        <p>&copy; 2026 Belta</p>
     </footer>
 </body>
 </html>
@@ -51,10 +50,10 @@ class __TwigTemplate_dacf0826bf30e7ceae00297502666a12ca043fe47e958cd6a72b6f6fdfb
     // line 5
     public function block_title($context, array $blocks = array())
     {
-        echo "Carnaval de Badajoz";
+        echo "Home";
     }
 
-    // line 14
+    // line 13
     public function block_content($context, array $blocks = array())
     {
     }
@@ -66,7 +65,7 @@ class __TwigTemplate_dacf0826bf30e7ceae00297502666a12ca043fe47e958cd6a72b6f6fdfb
 
     public function getDebugInfo()
     {
-        return array (  58 => 14,  52 => 5,  41 => 15,  39 => 14,  27 => 5,  21 => 1,);
+        return array (  57 => 13,  51 => 5,  40 => 14,  38 => 13,  27 => 5,  21 => 1,);
     }
 
     /** @deprecated since 1.27 (to be removed in 2.0). Use getSourceContext() instead */
@@ -83,8 +82,7 @@ class __TwigTemplate_dacf0826bf30e7ceae00297502666a12ca043fe47e958cd6a72b6f6fdfb
 <html>
 <head>
     <meta charset=\"UTF-8\">
-    <title>{% block title %}Carnaval de Badajoz{% endblock %}</title>
-    <link rel=\"stylesheet\" href=\"/css/style.css\">
+    <title>{% block title %}Home{% endblock %}</title>
 </head>
 <body>
     <header>
@@ -96,10 +94,10 @@ class __TwigTemplate_dacf0826bf30e7ceae00297502666a12ca043fe47e958cd6a72b6f6fdfb
     </main>
 
     <footer>
-        <p>&copy; 2026 Framework Badajoz</p>
+        <p>&copy; 2026 Belta</p>
     </footer>
 </body>
 </html>
-", "layout.twig", "C:\\Proyectos\\github\\BellotaFW\\app\\views\\layout.twig");
+", "layout.twig", "C:\\Proyectos\\github\\Belta\\app\\views\\layout.twig");
     }
 }

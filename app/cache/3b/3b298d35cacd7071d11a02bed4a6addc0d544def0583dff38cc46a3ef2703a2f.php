@@ -1,7 +1,7 @@
 <?php
 
 /* error.twig */
-class __TwigTemplate_74a6c0c9a9cbf4975f679b090d5cfb2adfd3dee7e0be34f0fa73fddcdb3104c6 extends Twig_Template
+class __TwigTemplate_2877d6d4d8cdd7a6b92e477ef861fd1f4e6c366e49fdc2f762d218155bb299b0 extends Twig_Template
 {
     public function __construct(Twig_Environment $env)
     {
@@ -90,6 +90,6 @@ class __TwigTemplate_74a6c0c9a9cbf4975f679b090d5cfb2adfd3dee7e0be34f0fa73fddcdb3
     </a>
 </div>
 {% endblock %}
-", "error.twig", "C:\\Proyectos\\github\\BellotaFW\\app\\views\\error.twig");
+", "error.twig", "C:\\Proyectos\\github\\Belta\\app\\views\\error.twig");
     }
 }

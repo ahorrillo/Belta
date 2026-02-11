@@ -1,40 +1,39 @@
 <?php
-/**
- * BellotaFW - Router Engine
- */
-
 class Router {
     private $routes = array();
-
-    // Registra una ruta en el sistema
-    public function get($uri, $callback) {
-        // Limpiamos la ruta para que 'contacto/' y 'contacto' sean lo mismo
-        $this->routes[trim($uri, '/')] = $callback;
+    public function get($uri, $callback) { $this->addRoute('GET', $uri, $callback); }
+    public function post($uri, $callback) { $this->addRoute('POST', $uri, $callback); }
+    private function addRoute($method, $uri, $callback) {
+        $path = trim($uri, '/');
+        if ($path === '') { $path = '/'; }
+        // Convertimos :slug en una expresión regular que PHP entienda
+        // Ejemplo: p/:slug -> p/([a-zA-Z0-9\-\_]+)
+        $pattern = preg_replace('/\:([a-zA-Z0-9\-\_]+)/', '([a-zA-Z0-9\-\_]+)', $path);
+        $this->routes[] = array(
+            'method'   => $method,
+            'pattern'  => '#^' . $pattern . '$#',
+            'callback' => $callback
+        );
     }
 
-    // Busca coincidencia y ejecuta la acción
-    public function dispatch($notFoundCallback) {
-        // 1. Obtenemos la URL actual y limpiamos parámetros GET (?id=1...)
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-        // 2. Ajuste para subcarpetas (si el proyecto no está en la raíz del dominio)
-        $scriptName = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-        $uri = substr($uri, strlen($scriptName));
-
-        // 3. Limpieza final de la URI
-        $uri = trim($uri, '/');
-        if ($uri === '') { $uri = '/'; }
-
-        // 4. Buscar si la URI existe en nuestro mapa de rutas
-        foreach ($this->routes as $route => $callback) {
-            // Si la ruta coincide con lo que el usuario escribió
-            if ($route === $uri || ($route === '/' && $uri === '')) {
-                // Ejecutamos la función asociada a esa ruta
-                return call_user_func($callback);
+    public function dispatch($notFound) {
+        // 1. Detección de URL (Lo que ya nos funcionaba)
+        $uri = $_SERVER['REQUEST_URI'];
+        if (strpos($uri, '?') !== false) { $uri = substr($uri, 0, strpos($uri, '?')); }
+        $base = dirname($_SERVER['SCRIPT_NAME']);
+        $url = substr($uri, strlen($base));
+        $url = trim($url, '/');
+        if ($url === '') { $url = '/'; }
+        $method = $_SERVER['REQUEST_METHOD'];
+        // 2. Buscamos por patrón
+        foreach ($this->routes as $route) {
+            if ($route['method'] === $method && preg_match($route['pattern'], $url, $matches)) {
+                // Quitamos el primer elemento (es la URL completa)
+                array_shift($matches);
+                // Ejecutamos pasando los parámetros encontrados (como el slug)
+                return call_user_func_array($route['callback'], $matches);
             }
         }
-
-        // 5. Si no hubo coincidencia, ejecutamos el error 404
-        return call_user_func($notFoundCallback);
+        return call_user_func($notFound);
     }
 }

@@ -28,8 +28,8 @@ class Database {
     public static function getConnection() {
         if (self::$instance === null) {
             try {
-                // El archivo se creará automáticamente en app/database.sqlite
-                $path = __DIR__ . '/../app/database.sqlite';
+                // El archivo se creará automáticamente en app/db/database.sqlite
+                $path = __DIR__ . '/../app/db/database.sqlite';
                 self::$instance = new PDO("sqlite:" . $path);
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 // Crear la tabla si no existe (automático)
