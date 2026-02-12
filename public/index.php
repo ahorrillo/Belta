@@ -1,6 +1,16 @@
 <?php
-// 1. Configuración de errores para el desarrollador
+/*
+ * BELTA es un micro-framework MVC ultra-ligero desarrollado en PHP 5.3
+ *
+ * Copyright (c) 2026 Vocento Diario HOY Antonio Horrillo <ahorrillo@hoy.es>
+ * Todos los derechos reservados.
+ *
+ * Este software es propiedad de HOY del Grupo Vocento y está protegido por las leyes de propiedad intelectual.
+ * Queda prohibida su copia, distribución o modificación sin autorización expresa y por escrito.
+ */
+
 ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 // 2. Autoload: Carga automática de clases
@@ -19,23 +29,17 @@ spl_autoload_register(function ($class) {
     }
 });
 
-// 3. RED DE SEGURIDAD: Manejo de Excepciones Globales
 set_exception_handler(function ($exception) {
     // Log del error para el programador (opcional)
     // error_log($exception->getMessage());
-
     // Mostramos la vista de error neutra con código 500
     ErrorController::show(500, "Lo sentimos, ha ocurrido un error interno en el servidor.");
 });
 
-// 4. Inicializar el Router
 $router = new Router();
 
-// 5. Cargar las rutas definidas por el usuario (no se puede en autoload porque no es una clase)
 require_once __DIR__ . '/../app/config/routes.php';
 
-// 6. Ejecutar el Router
-// Si no encuentra la ruta, disparamos el Error 404
 $router->dispatch(function() {
     ErrorController::show(404, "Vaya, parece que esta página no existe.");
 });

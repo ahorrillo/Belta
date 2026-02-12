@@ -1,12 +1,20 @@
-RewriteEngine On
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
 
-RewriteBase /Belta/public/
+    RewriteEngine On
 
-# Si es un archivo o directorio real, servirlo directamente
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
+    # Manejar la cabecera Authorization (útil para APIs)
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
-# Si no, redirigir todo a index.php
-# RewriteRule ^(.+)$ index.php [QSA,L]
-# RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
-RewriteRule ^ index.php [QSA,L]
+    # Si lo que piden no es un archivo físico (imagen, css, js)...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    # ...entonces mándalo todo al index.php
+    # RewriteRule ^(.+)$ index.php [QSA,L]
+    # RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>

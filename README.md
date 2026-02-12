@@ -1,15 +1,8 @@
-# **🌰 Belta Framework v1.0 🚀**
+# **🌰 Belta Framework 🚀**
 
-**Belta** es un micro-framework MVC ultra-ligero desarrollado en PHP 5.3+, diseñado para la creación rápida de landing pages dinámicas y corporativas con una arquitectura limpia y segura.
+### ***Legacy compatibility, Modern architecture***
 
-## **📋 Características Principales**
-
-* **Motor de Rutas Híbrido:** Soporte para rutas fijas (`/contacto`) y dinámicas con parámetros (`/p/:slug`) mediante detección inteligente de la ruta del servidor.  
-* **Gestión de Vistas con Twig:** Separación total de lógica y diseño mediante herencia de plantillas (`.twig`) y layouts base.  
-* **Persistencia en SQLite:** Base de datos integrada en un único archivo, eliminando la necesidad de servidores de base de datos externos.  
-* **Captura de Leads:** Sistema de procesamiento de formularios `POST` con almacenamiento automático de contactos en base de datos.  
-* **Diseño Corporativo:** Layouts base optimizados con Bootstrap 5 para una estética del sector financiero y mercantil.  
-* **Compatible con PHP 5.3:** Optimizado para funcionar en entornos legacy sin sacrificar una estructura moderna.
+**Belta** es un micro-framework PHP diseñado para entornos **PHP 5.3+**. Sigue el patrón **MVC** (Modelo-Vista-Controlador) y está optimizado para la gestión dinámica de landings mediante la inyección de layouts remotos a través de API.
 
 ---
 
@@ -18,98 +11,153 @@
 Plaintext
 
 ```
-/Belta
-├── /app
-│   ├── /config       # Configuración de rutas (routes.php)
-│   ├── /controllers  # Lógica de negocio (Home, Landing, Error)
-│   ├── /db           # Base de datos SQLite (database.sqlite)
-│   ├── /models       # Modelos de datos (Lead.php, Landing.php)
-│   └── /views        # Plantillas Twig (layouts/, landings/, home...)
-├── /core             # Núcleo del Framework
-│   ├── Router.php    # Enrutador con soporte para parámetros :slug
-│   ├── Database.php  # Conexión Singleton PDO SQLite
-│   ├── View.php      # Renderizador de Twig
-│   └── Redirect.php  # Helper de redirección
-├── /public           # Única carpeta pública (Web Root)
-│   ├── .htaccess     # Reescritura de URLs para Apache
-│   └── index.php     # Front Controller (Entrada única)
-└── README.md
+/
+├── app/
+│   ├── controllers/    # Lógica de las rutas
+│   ├── models/         # Clases de datos y lógica de negocio
+│   ├── views/          # Plantillas Twig locales (.twig)
+│   ├── utils/          # Herramientas (RemoteView, Validadores...)
+│   ├── db/             # Almacén de caché de la API (JSON/HTML)
+│   └── cache/          # Caché de compilación nativa de Twig (PHP)
+├── core/               # Núcleo del Framework
+│   ├── Router.php      # Sistema de rutas
+│   ├── Request.php     # Captura y limpieza de datos (XSS protection)
+│   ├── Response.php    # Manejo de salidas y cabeceras
+│   ├── View.php        # Renderizador estándar
+│   ├── Curl.php        # Cliente HTTP para peticiones externas
+│   └── Controller.php  # Clase base opcional
+├── public/             # Directorio raíz del servidor
+│   └── index.php       # Punto de entrada único
+└── vendor/             # Librerías externas (Twig)
 ```
 
 ---
 
-## **🚦 Sistema de Rutas (`app/config/routes.php`)**
+## **✨ Componentes Estrella**
 
-Belta utiliza un enrutador explícito. Las rutas se definen de la siguiente manera:
+### **1\. Sistema de "Remote Skeleton"**
 
-1. **Ruta de Inicio (Home):**  
-   PHP
+Permite que el diseño base (cabeceras, menús, footers) se gestione externamente mediante una API.
+
+* **Clase `RemoteView`**: Orquestador que une el HTML remoto con las vistas locales.
+* **Estrategia de Caché**:
+  1. **Caché de Red**: El HTML de la API se guarda en `app/db/` por 1 hora.
+  2. **Caché de Twig**: Las vistas se compilan a PHP en `app/cache/` para rendimiento máximo.
+
+### **2\. Clase `Request` (Blindada)**
+
+Gestiona la entrada de datos asegurando que nada "sucio" llegue a la lógica:
+
+* **Sanitización automática**: Uso de `strip_tags` y `htmlspecialchars` en todos los métodos `input()` y `query()`.
+* **Persistencia**: Mantenimiento del estado del método HTTP y la URI.
+
+### **3\. Clase `Curl` (Interoperabilidad)**
+
+Diseñada para superar las limitaciones de PHP 5.3 con protocolos HTTPS modernos (TLS 1.2+):
+
+* **SSL Bypass**: Configurada para ignorar validaciones de certificados locales desactualizados.
+* **Resiliencia**: Tiempos de espera configurados para no bloquear el servidor si la API externa falla.
+
+---
+
+## **🛠️ Configuración e Instalación**
+
+### **Requisitos**
+
+* PHP 5.3 o superior.
+* Extensión `php_curl` habilitada.
+* Permisos de escritura en `app/db/` y `app/cache/`.
+
+### **El Autoloader (`public/index.php`)**
+
+Es vital registrar tanto Twig como el sistema de carga de Belta:
+
+PHP
 
 ```
-$router->get('/', function() {
-    View::render('home_belta');
+require_once __DIR__ . '/../vendor/Twig/Autoloader.php';
+Twig_Autoloader::register();
+
+spl_autoload_register(function ($class) {
+    $folders = array('../core/', '../app/controllers/', '../app/models/', '../app/utils/');
+    foreach ($folders as $folder) {
+        $file = __DIR__ . '/' . $folder . $class . '.php';
+        if (file_exists($file)) { require_once $file; return; }
+    }
 });
 ```
 
-2.   
-3. **Ruta con Parámetros Dinámicos:**  
-   PHP
+---
+
+## **💻 Ejemplo de Implementación**
+
+### **1\. Definir Ruta**
+
+PHP
 
 ```
-// Captura URLs como: /p/banca-privada o /p/inversiones
-$router->get('p/:slug', function($slug) {
-    $controller = new LandingController();
-    $controller->dinamica($slug);
+$router->get('landing/:slug', function($request, $slug) {
+    $c = new LandingController();
+    return $c->show($request, $slug);
 });
 ```
 
-4.   
-5. **Ruta de Acción (POST):**  
-   PHP
+### **2\. El Controlador**
+
+PHP
 
 ```
-$router->post('contacto', function() {
-    $controller = new LandingController();
-    $controller->procesarContacto();
-});
+public function show($request, $slug) {
+    $data = Landing::find($slug);
+
+    // Se envía el nombre de la vista y los datos
+    return RemoteView::render('landings/promo', array(
+        'info' => $data
+    ));
+}
 ```
 
-6. 
+### **3\. La Vista (`app/views/landings/promo.twig`)**
+
+Twig
+
+```
+{% extends 'remote_layout.twig' %}
+
+{% block content %}
+    <main>
+        <h1>{{ info.title }}</h1>
+        <div class="body">{{ info.content | raw }}</div>
+    </main>
+{% endblock %}
+```
 
 ---
 
-## **💾 Base de Datos (SQLite)**
+## **🛡️ Seguridad y Rendimiento**
 
-El framework utiliza un archivo SQLite ubicado en `/app/db/database.sqlite`.
-
-* **Tabla `landings`**: Contiene el contenido que se inyecta en las plantillas dinámicas (títulos, subtítulos, colores, etc.).  
-* **Tabla `leads`**: Registra los datos de los usuarios que completan los formularios de contacto en las landings.
+* **Protección XSS**: Activada por defecto en la clase `Request`.
+* **Zero Latency**: Tras la primera carga, la aplicación no realiza peticiones externas de red hasta que expire la caché del skeleton, sirviendo la página desde el sistema de archivos local.
 
 ---
 
-## **⚙️ Requisitos e Instalación**
+## **✒️ Autoría y Propiedad Intelectual**
 
-### **Requisitos:**
+Desarrollado por **Antonio Horrillo Horrillo**.
+<ahorrillo@hoy.es> | <tuanhorrillo@gmail.com> | [GitHub](https://github.com/ahorrillo) | [LinkedIn](https://www.linkedin.com/in/antoniohh)
 
-* Servidor Apache con `mod_rewrite` habilitado.  
-* PHP 5.3 o superior.  
-* Extensión `pdo_sqlite` activa en PHP.
+Proyecto creado y mantenido por Antonio Horrillo Horrillo, responsable Analista, SEO Técnico y Desarrollo.
 
-### **Instalación Rápida:**
+* **Propiedad**: © 2026 **Vocento**. Todos los derechos reservados.
+* **Departamento**: Área de Tecnología / Desarrollo Editorial.
+* **Proyecto**: Belta Framework (Core Engine).
 
-1. Sube la carpeta del proyecto a tu servidor.  
-2. Asegúrate de que la carpeta `/app/db/` y `/app/cache/` (si Twig lo requiere) tengan permisos de escritura.  
-3. Accede vía navegador a la carpeta `/public/`.  
-   * Ejemplo: `http://localhost/Belta/public/`
+Este software ha sido desarrollado por y para el uso exclusivo de las cabeceras y servicios del grupo **Vocento**.
 
----
+## **📄 Licencia y Términos de Uso**
 
-## **🛡️ Seguridad y Diseño**
+-**Propiedad:** Grupo Vocento.
+-**Licencia:** Privativa (uso interno).
 
-* **Aislamiento de Lógica:** Solo el directorio `public` es accesible desde la web. El núcleo y los datos están protegidos en niveles superiores.  
-* **Manejo de Errores:** Incluye un `ErrorController` que renderiza páginas de error 404 y 500 con el mismo diseño corporativo que el resto del sitio.
-
----
-
-**Belta Framework** \- Simplicidad, orden y rendimiento para proyectos rápidos.
+Queda estrictamente prohibida la reproducción, distribución, modificación o comunicación pública, total o parcial, de este código fuente a terceros ajenos al Grupo Vocento sin el consentimiento expreso y por escrito de la dirección tecnológica.
 
