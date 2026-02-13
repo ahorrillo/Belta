@@ -1,16 +1,27 @@
 # **🌰 Belta Framework**
 
+![GitHub Tag](https://img.shields.io/github/v/tag/ahorrillo/Belta)
+![Website](https://img.shields.io/website?url=http%3A//servicios.hoy.es/)
 ![PHP](https://img.shields.io/badge/PHP-5.3-%23777bb3)
 ![Coverage](https://img.shields.io/badge/Coverage-95%25-brightgreen)
 ![License](https://img.shields.io/badge/License-Vocento-informational)
-![GitHub Tag](https://img.shields.io/github/v/tag/ahorrillo/Belta)
-![Website](https://img.shields.io/website?url=http://servicios.hoy.es/landings/)
+
+Belta es un micro-framework escrito en PHP, diseñado para modernizar entornos Legacy (PHP 5.3+). Implementa una arquitectura MVC estricta, inyección de dependencias ligera, base de datos SQLite y un sistema único de herencia de plantillas Twig y remotas vía API, Skeleton, optimizado para la gestión de landings y microsites corporativos de Vocento.
+
+![img-belta](https://github.com/ahorrillo/belta/blob/main/public/assets/img/belta.jpg "Ventana principal de Belta.")
 
 ---
 
-## **🚀 Descripción General del Proyecto**
+## **🚀 Control de Versiones**
 
-Belta es un micro-framework escrito en PHP, diseñado para modernizar entornos Legacy (PHP 5.3+). Implementa una arquitectura MVC estricta, inyección de dependencias ligera, base de datos SQLite y un sistema único de herencia de plantillas TWIG y remotas vía API, Skeleton, optimizado para la gestión de landings y microsites corporativos de Vocento.
+### Cambios nueva versión v1.0.7
+
+Fix: Corregimos Readme.md.
+Update: Versión y Shields.
+
+### Cambios nueva versión v1.0.1
+
+Update: Primer commit de Belta.
 
 ---
 
