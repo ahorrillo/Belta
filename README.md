@@ -1,11 +1,18 @@
 # **🌰 Belta Framework**
 
-### ***Estado del Proyecto: Operativo / Versión 1.0.5 (Legacy Modernized)***
+![PHP](https://img.shields.io/badge/PHP-5.3-%23777bb3)
+![Coverage](https://img.shields.io/badge/Coverage-95%25-brightgreen)
+![License](https://img.shields.io/badge/License-Vocento-informational)
+![GitHub Tag](https://img.shields.io/github/v/tag/ahorrillo/Belta)
+![Website](https://img.shields.io/website?url=http://servicios.hoy.es/landings/)
 
 ---
+
 ## **🚀 Descripción General del Proyecto**
 
-Belta es un micro-framework PHP propietario diseñado para modernizar entornos Legacy (PHP 5.3+). Implementa una arquitectura MVC estricta, inyección de dependencias ligera, base de datos SQLite y un sistema único de herencia de plantillas remotas vía API, optimizado para la gestión de landings y microsites corporativos de Vocento.
+Belta es un micro-framework escrito en PHP, diseñado para modernizar entornos Legacy (PHP 5.3+). Implementa una arquitectura MVC estricta, inyección de dependencias ligera, base de datos SQLite y un sistema único de herencia de plantillas TWIG y remotas vía API, Skeleton, optimizado para la gestión de landings y microsites corporativos de Vocento.
+
+---
 
 ## **📂 Estructura del Proyecto**
 
@@ -156,22 +163,20 @@ Twig
 
 ---
 
-## **✒️ Autoría y Propiedad Intelectual**
+## **✒️ Autor**
 
 Desarrollado por **Antonio Horrillo Horrillo**.
 <ahorrillo@hoy.es> | <tuanhorrillo@gmail.com> | [GitHub](https://github.com/ahorrillo) | [LinkedIn](https://www.linkedin.com/in/antoniohh)
 
 Proyecto creado y mantenido por Antonio Horrillo Horrillo, responsable Analista, SEO Técnico y Desarrollo.
 
-* **Propiedad**: © 2026 **Vocento**. Todos los derechos reservados.
-* **Departamento**: Área de Tecnología / Desarrollo Editorial.
-* **Proyecto**: Belta Framework (Core Engine).
-
-Este software ha sido desarrollado por y para el uso exclusivo de las cabeceras y servicios del grupo **Vocento**.
+---
 
 ## **📄 Licencia y Términos de Uso**
 
--**Propiedad:** Grupo Vocento.
+Este software ha sido desarrollado por y para el uso exclusivo de las cabeceras y servicios del grupo **Vocento**.
+
+-**Propiedad:** © 2026 **Vocento**. Todos los derechos reservados.
 -**Licencia:** Privativa (uso interno).
 
 Queda estrictamente prohibida la reproducción, distribución, modificación o comunicación pública, total o parcial, de este código fuente a terceros ajenos al Grupo Vocento sin el consentimiento expreso y por escrito de la dirección tecnológica.

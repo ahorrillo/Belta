@@ -14,7 +14,7 @@ class HomeController {
         // Aquí podrías llamar a un modelo, por ejemplo:
         // $novedades = Landing::getRecent();
         $data = array(
-            'version' => 'v1.0.5 Stable',
+            'version' => 'v1.0.6 Stable',
             'titulo' => 'Belta Framework',
             'descripcion' => 'La solución micro-framework MVC ultra-ligero desarrollado en PHP 5.3.'
         );
