@@ -28,6 +28,8 @@ class View {
                 'auto_reload' => true,
                 'debug' => true
             ));
+            // rutas
+            $twig->addGlobal('path', BASE_PATH);
             // Renderizamos el HTML
             $html = $twig->render($viewName . '.twig', $data);
         }

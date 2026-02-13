@@ -2,8 +2,10 @@
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
-
     RewriteEngine On
+
+    # IMPORTANTE: Indica la subcarpeta donde vive el proyecto
+    RewriteBase /landings/
 
     # Manejar la cabecera Authorization (útil para APIs)
     RewriteCond %{HTTP:Authorization} .

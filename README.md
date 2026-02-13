@@ -14,10 +14,15 @@ Belta es un micro-framework escrito en PHP, diseñado para modernizar entornos L
 
 ## **🚀 Control de Versiones**
 
+### Cambios nueva versión v1.0.8
+
+* Update: Configuramos las rutas de la App.
+* Fix: Ajustaremos el BASE_PATH en el `index.php` y el RewriteBase en el `.htaccess` con la carpeta del servidor.
+
 ### Cambios nueva versión v1.0.7
 
-Fix: Corregimos Readme.md.
-Update: Versión y Shields.
+* Fix: Corregimos Readme.md.
+* Update: Versión y Shields.
 
 ### Cambios nueva versión v1.0.1
 

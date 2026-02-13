@@ -32,10 +32,16 @@ class Router {
         if (strpos($uri, '?') !== false) {
             $uri = substr($uri, 0, strpos($uri, '?'));
         }
-        $base = dirname($_SERVER['SCRIPT_NAME']);
-        $url = substr($uri, strlen($base));
+        //$base = dirname($_SERVER['SCRIPT_NAME']);
+        //$url = substr($uri, strlen($base));
+        // Soporta rutas en carpetas del servidor, por ejemplo /landings/
+        if (defined('BASE_PATH') && BASE_PATH !== '') {
+            if (strpos($uri, BASE_PATH) === 0) {
+                $uri = substr($uri, strlen(BASE_PATH));
+            }
+        }
         // IMPORTANTE: Dejamos la URL limpia sin barras en los extremos para comparar
-        $url = trim($url, '/');
+        $url = trim($uri, '/');
         if ($url === '') { $url = '/'; }
         $method = $_SERVER['REQUEST_METHOD'];
         foreach ($this->routes as $route) {

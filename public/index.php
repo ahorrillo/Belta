@@ -13,6 +13,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// En la raíz, vacío: ''
+// En una carpeta: '/landings'
+define('BASE_PATH', '/landings');
+
 $baseDir = dirname(__DIR__);
 
 spl_autoload_register(function ($class) use ($baseDir) {
