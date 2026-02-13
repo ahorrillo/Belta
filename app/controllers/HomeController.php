@@ -10,13 +10,15 @@
  */
 
 class HomeController {
-    // Entrada
-    public function index() {
-        // Datos para la vista
+    public function index($request) {
+        // Aquí podrías llamar a un modelo, por ejemplo:
+        // $novedades = Landing::getRecent();
         $data = array(
-            'titulo' => 'Campaña Carnaval de Badajoz',
-            'descripcion' => '¡Bienvenidos a la campaña del Carnaval de Badajoz! Aquí encontrarás toda la información sobre eventos, actividades y noticias relacionadas con esta festividad tan especial. Únete a nosotros para celebrar juntos el espíritu del carnaval con alegría y diversión.',
+            'version' => 'v1.0.5 Stable',
+            'titulo' => 'Belta Framework',
+            'descripcion' => 'La solución micro-framework MVC ultra-ligero desarrollado en PHP 5.3.'
         );
-        return View::render('home', $data);
+        // Usamos View para la Home
+        return View::render('landings/home_belta', $data);
     }
 }

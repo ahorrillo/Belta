@@ -14,19 +14,22 @@ class Database {
     public static function getConnection() {
         if (self::$instance === null) {
             try {
-                // El archivo se creará automáticamente en app/db/database.sqlite
+                // El archivo se encuentra en app/db/database.sqlite
                 $path = __DIR__ . '/../app/db/database.sqlite';
                 self::$instance = new PDO("sqlite:" . $path);
+                // Configuración de errores para desarrollo
                 self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                // Crear la tabla si no existe (automático)
-                $query = "CREATE TABLE IF NOT EXISTS imagenes (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            titulo TEXT NOT NULL,
-                            ruta TEXT NOT NULL,
-                            fecha DATETIME DEFAULT CURRENT_TIMESTAMP
-                          )";
-                self::$instance->exec($query);
+                // Opcional: Forzar codificación UTF-8 si fuera necesario
+                // self::$instance->exec("PRAGMA encoding = 'UTF-8';");
+                // $query = "CREATE TABLE IF NOT EXISTS XXXXXXXXXXX (
+                //             id INTEGER PRIMARY KEY AUTOINCREMENT,
+                //             nombre TEXT NOT NULL,
+                //             apellidos TEXT NOT NULL,
+                //             fecha DATETIME DEFAULT CURRENT_TIMESTAMP
+                //           )";
+                // self::$instance->exec($query);
             } catch (PDOException $e) {
+                // En producción, podrías loguear esto en lugar de hacer un die
                 die("Error de conexión con SQLite: " . $e->getMessage());
             }
         }

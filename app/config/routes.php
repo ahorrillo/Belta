@@ -9,9 +9,10 @@
  * Queda prohibida su copia, distribución o modificación sin autorización expresa y por escrito.
  */
 
-// Raíz (Home de Belta)
+// Ruta para la Home de Belta
 $router->get('/', function($request) {
-    return View::render('landings/home_belta');
+    $controller = new HomeController();
+    return $controller->index($request);
 });
 
 // Landing Estática
@@ -32,7 +33,7 @@ $router->post('/contacto', function($request) {
     return $controller->procesarContacto($request);
 });
 
-// Papel Home
+// Papel Home Skeleton
 $router->get('/papel-home', function($request) {
     $controller = new EmeryController();
     return $controller->home($request);

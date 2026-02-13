@@ -1,10 +1,11 @@
-# **🌰 Belta Framework 🚀**
+# **🌰 Belta Framework**
 
-### ***Legacy compatibility, Modern architecture***
-
-**Belta** es un micro-framework PHP diseñado para entornos **PHP 5.3+**. Sigue el patrón **MVC** (Modelo-Vista-Controlador) y está optimizado para la gestión dinámica de landings mediante la inyección de layouts remotos a través de API.
+### ***Estado del Proyecto: Operativo / Versión 1.0.5 (Legacy Modernized)***
 
 ---
+## **🚀 Descripción General del Proyecto**
+
+Belta es un micro-framework PHP propietario diseñado para modernizar entornos Legacy (PHP 5.3+). Implementa una arquitectura MVC estricta, inyección de dependencias ligera, base de datos SQLite y un sistema único de herencia de plantillas remotas vía API, optimizado para la gestión de landings y microsites corporativos de Vocento.
 
 ## **📂 Estructura del Proyecto**
 
@@ -16,19 +17,20 @@ Plaintext
 │   ├── controllers/    # Lógica de las rutas
 │   ├── models/         # Clases de datos y lógica de negocio
 │   ├── views/          # Plantillas Twig locales (.twig)
-│   ├── utils/          # Herramientas (RemoteView, Validadores...)
+│   ├── config/         # Contiene routes.php para el manejo de URLs.
 │   ├── db/             # Almacén de caché de la API (JSON/HTML)
-│   └── cache/          # Caché de compilación nativa de Twig (PHP)
-├── core/               # Núcleo del Framework
+│   └── cache/          # Almacena logs y la compilación de Twig
+├── core/
 │   ├── Router.php      # Sistema de rutas
 │   ├── Request.php     # Captura y limpieza de datos (XSS protection)
 │   ├── Response.php    # Manejo de salidas y cabeceras
 │   ├── View.php        # Renderizador estándar
 │   ├── Curl.php        # Cliente HTTP para peticiones externas
-│   └── Controller.php  # Clase base opcional
-├── public/             # Directorio raíz del servidor
+│   └── ViewSkeleton.php# Renderizador con Skeleton
+├── public/
+│   ├── assets/         # Activos estáticos (CSS, JS, IMG)
 │   └── index.php       # Punto de entrada único
-└── vendor/             # Librerías externas (Twig)
+└── vendor/             # Librerías externas (Twig 1.x)
 ```
 
 ---
@@ -39,9 +41,9 @@ Plaintext
 
 Permite que el diseño base (cabeceras, menús, footers) se gestione externamente mediante una API.
 
-* **Clase `RemoteView`**: Orquestador que une el HTML remoto con las vistas locales.
+* **Clase `ViewSkeleton`**: Orquestador que une el HTML remoto con las vistas locales.
 * **Estrategia de Caché**:
-  1. **Caché de Red**: El HTML de la API se guarda en `app/db/` por 1 hora.
+  1. **Caché de Red**: El HTML de la API se guarda en `app/cache` por 1 hora.
   2. **Caché de Twig**: Las vistas se compilan a PHP en `app/cache/` para rendimiento máximo.
 
 ### **2\. Clase `Request` (Blindada)**
@@ -58,31 +60,43 @@ Diseñada para superar las limitaciones de PHP 5.3 con protocolos HTTPS modernos
 * **SSL Bypass**: Configurada para ignorar validaciones de certificados locales desactualizados.
 * **Resiliencia**: Tiempos de espera configurados para no bloquear el servidor si la API externa falla.
 
+### **4\. Clase `Database` (Persistencia)**
+
+Soporta almacenamiento de datos mediante una base de datos SQLite:
+
+* **Models**: Genera un modelo de datos para cada tabla.
+* **Integración**: utiliza los datos almacenados en las tablas, en las visualizaciones Twig.
+
 ---
 
 ## **🛠️ Configuración e Instalación**
 
 ### **Requisitos**
 
-* PHP 5.3 o superior.
+* PHP 5.3.
 * Extensión `php_curl` habilitada.
-* Permisos de escritura en `app/db/` y `app/cache/`.
+* Permisos de escritura en `app/cache/`.
+* Apache con mod_rewrite.c.
 
 ### **El Autoloader (`public/index.php`)**
 
-Es vital registrar tanto Twig como el sistema de carga de Belta:
+Es vital registrar el sistema de carga de Belta:
 
 PHP
 
 ```
-require_once __DIR__ . '/../vendor/Twig/Autoloader.php';
-Twig_Autoloader::register();
-
-spl_autoload_register(function ($class) {
-    $folders = array('../core/', '../app/controllers/', '../app/models/', '../app/utils/');
-    foreach ($folders as $folder) {
-        $file = __DIR__ . '/' . $folder . $class . '.php';
-        if (file_exists($file)) { require_once $file; return; }
+spl_autoload_register(function ($class) use ($baseDir) {
+    $paths = array(
+        $baseDir . '/core/',
+        $baseDir . '/app/controllers/',
+        $baseDir . '/app/models/'
+    );
+    foreach ($paths as $path) {
+        $file = $path . $class . '.php';
+        if (file_exists($file)) {
+            require_once $file;
+            return;
+        }
     }
 });
 ```
@@ -96,9 +110,9 @@ spl_autoload_register(function ($class) {
 PHP
 
 ```
-$router->get('landing/:slug', function($request, $slug) {
-    $c = new LandingController();
-    return $c->show($request, $slug);
+$router->get('/', function($request) {
+    $controller = new HomeController();
+    return $controller->index($request);
 });
 ```
 
@@ -107,28 +121,29 @@ $router->get('landing/:slug', function($request, $slug) {
 PHP
 
 ```
-public function show($request, $slug) {
-    $data = Landing::find($slug);
-
-    // Se envía el nombre de la vista y los datos
-    return RemoteView::render('landings/promo', array(
-        'info' => $data
-    ));
+class HomeController {
+    public function index($request) {
+        // Aquí podrías llamar a un modelo, por ejemplo:
+        // $novedades = Landing::getRecent();
+        $data = array(
+            'version' => 'v1.0.5 Stable',
+            'titulo' => 'Belta Framework',
+            'descripcion' => 'La solución micro-framework MVC ultra-ligero desarrollado en PHP 5.3.'
+        );
+        // Usamos View para la Home
+        return View::render('landings/home_belta', $data);
+    }
 }
 ```
 
-### **3\. La Vista (`app/views/landings/promo.twig`)**
+### **3\. La Vista (`app/views/landings/home_belta.twig`)**
 
 Twig
 
 ```
-{% extends 'remote_layout.twig' %}
+{% extends "layouts/landing_base.twig" %}
 
 {% block content %}
-    <main>
-        <h1>{{ info.title }}</h1>
-        <div class="body">{{ info.content | raw }}</div>
-    </main>
 {% endblock %}
 ```
 
@@ -160,4 +175,3 @@ Este software ha sido desarrollado por y para el uso exclusivo de las cabeceras 
 -**Licencia:** Privativa (uso interno).
 
 Queda estrictamente prohibida la reproducción, distribución, modificación o comunicación pública, total o parcial, de este código fuente a terceros ajenos al Grupo Vocento sin el consentimiento expreso y por escrito de la dirección tecnológica.
-

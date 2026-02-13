@@ -4,21 +4,60 @@
 <div class="container py-5 mt-5">
     <div class="row align-items-center">
         <div class="col-lg-6">
-            <span class="badge bg-primary mb-3">v1.0.0 Stable</span>
-            <h1 class="display-3 fw-bold">Belta Framework</h1>
-            <p class="lead text-muted">La solución MVC ultra-ligera y segura optimizada para entornos PHP 5.3.</p>
+            <span class="badge bg-primary mb-3">{{ version }}</span>
+            <h1 class="display-3 fw-bold">{{ titulo }} 🚀</h1>
+            <p class="lead text-muted">{{descripcion }}</p>
             <div class="mt-4">
-                <a href="soluciones-financieras" class="btn btn-bank-primary btn-lg me-2">Ver Demo Banca</a>
-                <a href="#docs" class="btn btn-outline-secondary btn-lg">Documentación</a>
+                <a href="/soluciones-financieras" class="btn btn-outline-secondary btn-lg" target="_blank">Página Estática</a>
+                <a href="/p/banca-privada" class="btn btn-outline-secondary btn-lg" target="_blank">Página Dinámica</a>
+                <a href="/papel-home" class="btn btn-outline-secondary btn-lg" target="_blank">Página Skeleton</a>
             </div>
         </div>
         <div class="col-lg-6">
             <div class="bg-light p-5 rounded-4 shadow-sm border">
                 <code class="text-dark">
-                    $router->get('/', function() { <br>
-                    &nbsp;&nbsp; echo "Hola Mundo con Belta"; <br>
+                    // Ruta para la Home de Belta<br>
+                    $router->get('/', function($request) {<br>
+                        $controller = new HomeController();<br>
+                        return $controller->index($request);<br>
                     });
                 </code>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container py-5">
+    <div style="margin: 0px auto; color: #333;">
+        <header style="text-align: center; margin-bottom: 40px;">
+            <p class="lead text-muted" style="font-size: 1.5em;">Base del framework:</p>
+        </header>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+            <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); flex: 1; min-width: 250px;">
+                <h3 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">🏛️ Arquitectura</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 5px 0;">✅ <strong>Patrón:</strong> MVC Estricto</li>
+                    <li style="padding: 5px 0;">✅ <strong>Motor:</strong> PHP {{ constant('PHP_VERSION') }}</li>
+                    <li style="padding: 5px 0;">✅ <strong>DB:</strong> SQLite (PDO)</li>
+                    <li style="padding: 5px 0;">✅ <strong>Views:</strong> Twig v1.x</li>
+                </ul>
+            </div>
+            <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); flex: 1; min-width: 250px;">
+                <h3 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">📂 Estructura</h3>
+                <ul style="list-style: none; padding: 0;">
+                    <li style="padding: 5px 0;">📁 <code>/app/(config, controllers, db, views)</code></li>
+                    <li style="padding: 5px 0;">📁 <code>/core/(curl, database, router, view)</code></li>
+                    <li style="padding: 5px 0;">📁 <code>/public/(index.php, assets, .htaccess)</code></li>
+                    <li style="padding: 5px 0;">📁 <code>/vendor/(Twig)</code></li>
+                </ul>
+            </div>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 5px solid #007bff;">
+                <h4 style="margin-top: 0;">🛠️ Estado del Sistema</h4>
+                <p>El sistema dispone de un servicio de logs de errores que registran los </br>
+                    problemas que se puedan ocasionar en la ejecución del framework.</br>
+                    Los logs se guardan en caché, junto a la del skeleton y Twig Views:</br></p>
+                <code>app/cache/twig cache</code></br>
+                <code>app/cache/belta_errors.log</code></br>
+                <code>app/cache/skeleton_cache.html</code>
             </div>
         </div>
     </div>

@@ -13,12 +13,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// 2. Autoload: Carga automática de clases
-spl_autoload_register(function ($class) {
+$baseDir = dirname(__DIR__);
+
+spl_autoload_register(function ($class) use ($baseDir) {
     $paths = array(
-        __DIR__ . '/../core/',
-        __DIR__ . '/../app/controllers/',
-        __DIR__ . '/../app/models/'
+        $baseDir . '/core/',
+        $baseDir . '/app/controllers/',
+        $baseDir . '/app/models/'
     );
     foreach ($paths as $path) {
         $file = $path . $class . '.php';
@@ -29,11 +30,13 @@ spl_autoload_register(function ($class) {
     }
 });
 
-set_exception_handler(function ($exception) {
-    // Log del error para el programador (opcional)
-    // error_log($exception->getMessage());
-    // Mostramos la vista de error neutra con código 500
-    ErrorController::show(500, "Lo sentimos, ha ocurrido un error interno en el servidor.");
+set_exception_handler(function ($exception) use ($baseDir) {
+    // Log del error
+    error_log($exception->getMessage() . PHP_EOL, 3, $baseDir . "/app/cache/belta_errors.log");
+    // Mostramos la vista de error con código 500
+    $response = ErrorController::show(500, "Lo sentimos, ha ocurrido un error interno en el servidor.");
+    $response->send();
+    exit;
 });
 
 $router = new Router();
@@ -41,5 +44,6 @@ $router = new Router();
 require_once __DIR__ . '/../app/config/routes.php';
 
 $router->dispatch(function() {
-    ErrorController::show(404, "Vaya, parece que esta página no existe.");
+    $response = ErrorController::show(404, "Vaya, parece que esta página no existe.");
+    return $response->send();
 });
